@@ -13,20 +13,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../dbConfig/db"));
-const showBoards = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const editBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { boardId } = req.params;
+    const { boardName } = req.body;
+    console.log('BoardId ', boardId);
+    console.log('BoardName ', boardName);
     try {
-        const allBoards = yield (0, db_1.default)("SELECT * FROM boards ", []);
-        if (allBoards.rows.length === 0) {
-            return res
-                .status(400)
-                .json({ status: "error", message: "No Boards found!!" });
+        const updateBoard = yield (0, db_1.default)('UPDATE boards SET name= $1 WHERE name<>$1 AND id= $2 RETURNING id,name', [boardName, boardId]);
+        if (updateBoard.rowCount == 0) {
+            console.log('no change');
+            req.board = {
+                id: boardId,
+                name: boardName
+            };
         }
-        res.status(201).json(allBoards.rows);
+        else {
+            console.log('change');
+            req.board = {
+                id: updateBoard.rows[0].id,
+                name: updateBoard.rows[0].id
+            };
+        }
         next();
     }
     catch (error) {
         console.log(error);
-        res.status(404).json({ status: "error", message: "There was an error!!" });
     }
 });
-exports.default = showBoards;
+exports.default = editBoard;

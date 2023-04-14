@@ -8,22 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const jsondata_1 = __importDefault(require("../dbConfig/jsondata"));
-const newBoardController_1 = __importDefault(require("../controllers/boardsControllers/newBoardController"));
-const taskroutes = express_1.default.Router();
-taskroutes.route("/tasks").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const editColumns = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const BoardId = req.params;
+    const { columns } = req.body;
     try {
-        res.json(jsondata_1.default);
-        return;
     }
-    catch (err) {
-        console.error(err);
+    catch (error) {
+        console.log(error);
     }
-}));
-taskroutes.get("/newBoard", newBoardController_1.default);
-exports.default = taskroutes;
+});
+exports.default = editColumns;

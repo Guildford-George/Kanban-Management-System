@@ -12,18 +12,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const jsondata_1 = __importDefault(require("../dbConfig/jsondata"));
-const newBoardController_1 = __importDefault(require("../controllers/boardsControllers/newBoardController"));
-const taskroutes = express_1.default.Router();
-taskroutes.route("/tasks").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const db_1 = __importDefault(require("../../dbConfig/db"));
+const showBoards = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.json(jsondata_1.default);
-        return;
+        const allBoards = yield (0, db_1.default)("SELECT * FROM boards ", []);
+        if (allBoards.rows.length === 0) {
+            return res
+                .status(400)
+                .json({ status: "error", message: "No Boards found!!" });
+        }
+        res.status(201).json(allBoards.rows);
+        next();
     }
-    catch (err) {
-        console.error(err);
+    catch (error) {
+        console.log(error);
+        res.status(404).json({ status: "error", message: "There was an error!!" });
     }
-}));
-taskroutes.get("/newBoard", newBoardController_1.default);
-exports.default = taskroutes;
+});
+exports.default = showBoards;
