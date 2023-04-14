@@ -35,4 +35,5 @@ const config = {
     development,
     production
 };
+console.log(config[stage]);
 exports.default = config[stage];
