@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const stage = process.env.NODE_ENV;
+console.log('stage: ', stage);
 const development = {
     server: {
         PORT: Number(process.env.PORT),
