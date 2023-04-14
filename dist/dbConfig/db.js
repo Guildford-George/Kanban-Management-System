@@ -10,7 +10,7 @@ const pgpool = new pg_1.Pool({
     password: config_1.default.db.DBPASSWORD,
     host: config_1.default.db.DBHOST,
     port: config_1.default.db.DBPORT,
-    database: "kanban",
+    database: config_1.default.db.DBDATABASE,
 });
 const query = (command, params) => pgpool.query(command, params);
 exports.default = query;
