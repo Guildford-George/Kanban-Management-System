@@ -11,6 +11,7 @@ const development = {
         PORT: Number(process.env.PORT),
     },
     db: {
+        DBDATABASE: process.env.DEV_DBDATABASE,
         DBUSER: process.env.DEV_DBUSER,
         DBPASSWORD: process.env.DEV_DBPASSWORD,
         DBPORT: Number(process.env.DEV_DBPORT),
@@ -22,6 +23,7 @@ const production = {
         PORT: Number(process.env.PORT),
     },
     db: {
+        DBDATABASE: process.env.PGDATABASE,
         DBUSER: process.env.PGUSER,
         DBPASSWORD: process.env.PGPASSWORD,
         DBPORT: Number(process.env.PGPORT),
