@@ -13,28 +13,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../../dbConfig/db"));
-const showBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const newSingleColumn = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
+    const { columns } = req.body;
     try {
         if (!id) {
-            return res.status(400).json({ status: "error", message: "Board is not found" });
+            return res.status(400).json({ status: "error", message: "The board can not be empty!!" });
         }
-        const singleBoard = yield (0, db_1.default)("SELECT * FROM boards WHERE id= $1", [id]);
-        if (singleBoard.rowCount === 0) {
-            return res
-                .status(400)
-                .json({ status: "error", message: "No Boards found!!" });
+        if (!columns || columns.length != 1) {
+            return res.status(400).json({ status: "error", message: "Enter the new column" });
+        }
+        const foundBoard = yield (0, db_1.default)('SELECT id,name FROM boards WHERE id= $1', [id]);
+        if (foundBoard.rowCount == 0) {
+            return res.status(204).json({ status: "error", message: "The board does not exist!!" });
+        }
+        const foundColumn = yield (0, db_1.default)('SELECT * FROM columns WHERE board_id= $1 AND name ILIKE $2', [id, columns[0]]);
+        if (foundColumn.rowCount > 0) {
+            return res.status(403).json({ status: "error", message: "Column already exist" });
         }
         req.board = {
-            id: singleBoard.rows[0].id,
-            name: singleBoard.rows[0].name
+            id: foundBoard.rows[0].id,
+            name: foundBoard.rows[0].name
         };
-        console.log('end');
         next();
     }
     catch (error) {
         console.log(error);
-        res.status(404).json({ status: "error", message: "There was an error!!" });
+        res.status(500).json({ status: "error", message: "There was an error trying to create column!!" });
     }
 });
-exports.default = showBoard;
+exports.default = newSingleColumn;

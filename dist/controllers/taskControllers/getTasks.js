@@ -13,28 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../../dbConfig/db"));
-const showBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { columnId, name } = req.column;
     try {
-        if (!id) {
-            return res.status(400).json({ status: "error", message: "Board is not found" });
+        if (!columnId) {
+            return res.status(400).json({ status: "error", message: "The task is not found" });
         }
-        const singleBoard = yield (0, db_1.default)("SELECT * FROM boards WHERE id= $1", [id]);
-        if (singleBoard.rowCount === 0) {
-            return res
-                .status(400)
-                .json({ status: "error", message: "No Boards found!!" });
-        }
-        req.board = {
-            id: singleBoard.rows[0].id,
-            name: singleBoard.rows[0].name
+        const tasks = yield (0, db_1.default)('SELECT id taskId,title description FROM tasks WHERE column_id= $1', [columnId]);
+        const column = {
+            columnId,
+            name,
+            tasks: [...tasks.rows]
         };
-        console.log('end');
-        next();
+        res.status(200).json({ status: "ok", column });
     }
     catch (error) {
         console.log(error);
-        res.status(404).json({ status: "error", message: "There was an error!!" });
+        res.status(500).json({ status: "error", message: "An error has occurred" });
     }
 });
-exports.default = showBoard;
+exports.default = getTasks;

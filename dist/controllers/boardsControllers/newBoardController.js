@@ -19,16 +19,10 @@ const newBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
     console.log(id);
     try {
         const { name, columns } = req.body;
-        console.log();
         if (!name) {
-            return res
-                .status(400)
-                .json({
-                status: "error",
-                message: "Name input field is empty. Enter board name",
-            });
+            return res.status(400).json({ status: "error", message: "Board name can not the empty!!" });
         }
-        if (!/^[a-zA-Z]+[_a-zA-Z]*$/.test(name) || name.length < 3) {
+        if (!/^[a-zA-Z]+[\sa-zA-Z]*$/.test(name) || name.length < 3) {
             return res
                 .status(400)
                 .json({
@@ -36,19 +30,20 @@ const newBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
                 message: "Board name must be three-character long and begin with an alphabet!!",
             });
         }
-        const foundBoard = yield (0, db_1.default)("SELECT id FROM boards WHERE name= $1", [
-            name.toLowerCase(),
+        const foundBoard = yield (0, db_1.default)("SELECT id FROM boards WHERE name ILIKE $1", [
+            name,
         ]);
         if (foundBoard.rowCount > 0) {
             return res
                 .status(409)
                 .json({ status: "error", message: "Board name already exist!!" });
         }
-        const createBoard = yield (0, db_1.default)("INSERT INTO boards(id,name) VALUES($1,$2) RETURNING id, name", [id, name.toLowerCase()]);
+        const createBoard = yield (0, db_1.default)("INSERT INTO boards(id,name) VALUES($1,$2) RETURNING id, name", [id, name]);
         if (!columns || columns.length == 0) {
             return res.status(201).json({ status: "ok", board: createBoard.rows[0] });
         }
         req.board = createBoard.rows[0];
+        req.body.fromBoard = true;
         next();
     }
     catch (error) {

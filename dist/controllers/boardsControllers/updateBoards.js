@@ -23,7 +23,7 @@ const updateBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         if (!name) {
             return res.status(400).json({ status: "error", message: "Board name can not the empty!!" });
         }
-        if (!/^[a-zA-Z]+[_a-zA-Z]*$/.test(name) || name.length < 3) {
+        if (!/^[a-zA-Z]+[\sa-zA-Z]*$/.test(name) || name.length < 3) {
             return res
                 .status(400)
                 .json({

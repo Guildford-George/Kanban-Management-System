@@ -17,13 +17,14 @@ const db_1 = __importDefault(require("../../dbConfig/db"));
 const newColumns = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const boardId = req.board.id;
     const boardName = req.board.name;
-    const { columns } = req.body;
+    const { columns, fromBoard } = req.body;
     try {
+        // implement don't repeat column name
         const loopMidLength = Math.ceil(columns.length / 2);
         for (let i = 0; i < loopMidLength; i++) {
-            columns[i].push(boardId);
+            columns[i] = [columns[i], boardId];
             if (i + loopMidLength < columns.length) {
-                columns[i + loopMidLength].push(boardId);
+                columns[i + loopMidLength] = [columns[i + loopMidLength], boardId];
             }
         }
         const queryCommand = (0, pg_format_1.default)("INSERT INTO %s(name, board_id) VALUES %L RETURNING id,name", "columns", columns);
@@ -35,14 +36,14 @@ const newColumns = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             name: boardName,
             columns: createColumns.rows,
         };
-        res.status(201).json({ status: "error", board: boardDetail });
+        res.status(201).json({ status: "ok", board: boardDetail });
     }
     catch (error) {
         console.log(error);
-        yield (0, db_1.default)("DELETE FROM $1 WHERE $2=$3", ["boards", "id", boardId]);
-        res
-            .status(500)
-            .json({
+        if (fromBoard) {
+            yield (0, db_1.default)("DELETE FROM $1 WHERE $2=$3", ["boards", "id", boardId]);
+        }
+        res.status(500).json({
             status: "error",
             message: "Error occcurred while trying to create columns. Please if some of the column names are not the same",
         });

@@ -13,28 +13,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../../dbConfig/db"));
-const showBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+const getSubtasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { taskId } = req.task;
     try {
-        if (!id) {
-            return res.status(400).json({ status: "error", message: "Board is not found" });
+        if (!taskId) {
+            return res.status(400).json({ status: "error", message: "Task can not found" });
         }
-        const singleBoard = yield (0, db_1.default)("SELECT * FROM boards WHERE id= $1", [id]);
-        if (singleBoard.rowCount === 0) {
-            return res
-                .status(400)
-                .json({ status: "error", message: "No Boards found!!" });
-        }
-        req.board = {
-            id: singleBoard.rows[0].id,
-            name: singleBoard.rows[0].name
-        };
-        console.log('end');
-        next();
+        const subtasks = yield (0, db_1.default)('SELECT id subtaskID, title, is_completed FROM subtasks WHERE task_id= $1', [taskId]);
+        const task = Object.assign(Object.assign({}, req.task), { subtasks: subtasks.rows });
+        res.status(200).json({ status: "success", task });
     }
     catch (error) {
         console.log(error);
-        res.status(404).json({ status: "error", message: "There was an error!!" });
+        res.status(500).json({ status: "error", message: "There was error trying fetch subtasks" });
     }
 });
-exports.default = showBoard;
+exports.default = getSubtasks;

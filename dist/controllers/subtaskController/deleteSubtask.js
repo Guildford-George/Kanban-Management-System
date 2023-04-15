@@ -13,28 +13,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../../dbConfig/db"));
-const showBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+const deleteSubtask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const subtaskId = req.params.id;
     try {
-        if (!id) {
-            return res.status(400).json({ status: "error", message: "Board is not found" });
+        if (!subtaskId) {
+            return res.status(400).json({ status: "error", message: "The subtask is not found" });
         }
-        const singleBoard = yield (0, db_1.default)("SELECT * FROM boards WHERE id= $1", [id]);
-        if (singleBoard.rowCount === 0) {
-            return res
-                .status(400)
-                .json({ status: "error", message: "No Boards found!!" });
+        const subtaskTarget = yield (0, db_1.default)('DELETE FROM subtasks WHERE id= $1', [subtaskId]);
+        if (subtaskTarget.rowCount == 0) {
+            return res.status(403).json({ status: "error", message: "The subtask does not exist" });
         }
-        req.board = {
-            id: singleBoard.rows[0].id,
-            name: singleBoard.rows[0].name
-        };
-        console.log('end');
-        next();
+        res.status(200).json({ status: "success" });
     }
     catch (error) {
         console.log(error);
-        res.status(404).json({ status: "error", message: "There was an error!!" });
+        res.status(500).json({ status: "error", message: "There was an error while trying to delete subtask" });
     }
 });
-exports.default = showBoard;
+exports.default = deleteSubtask;
