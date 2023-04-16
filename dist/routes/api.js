@@ -24,6 +24,7 @@ const showAllBoardController_1 = __importDefault(require("../controllers/boardsC
 const deleteSubtask_1 = __importDefault(require("../controllers/subtaskController/deleteSubtask"));
 const updateSubtask_1 = __importDefault(require("../controllers/subtaskController/updateSubtask"));
 const apiRouter = express_1.default.Router();
+apiRouter.get("/boards", showAllBoardController_1.default);
 /**
  * @swagger
  * /api/v1/addboard:

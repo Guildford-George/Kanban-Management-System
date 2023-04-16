@@ -17,11 +17,10 @@ const updateBulkColumns = (req, res) => __awaiter(void 0, void 0, void 0, functi
     const boardId = req.params.id;
     const boardName = req.board.name;
     const { columns, previousBoardName } = req.body;
+    const { registered, unRegistered } = columns;
     try {
-        if (columns.length == 1) {
-            const { columnid, name } = columns[0];
-            const foundColumnName = yield (0, db_1.default)('SELECT * FROM columns WHERE name', []);
-        }
+        const allRegisteredColumn = yield (0, db_1.default)('SELECT name FROM colums WHERE board_id= $1', [boardId]);
+        const allColumns = allRegisteredColumn.rows.map((col) => col.name);
     }
     catch (error) {
         console.log(error);
