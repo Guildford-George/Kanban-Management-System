@@ -17,10 +17,12 @@ const updateBulkColumns = (req, res) => __awaiter(void 0, void 0, void 0, functi
     const boardId = req.params.id;
     const boardName = req.board.name;
     const { columns, previousBoardName } = req.body;
-    const { registered, unRegistered } = columns;
+    const { registered } = columns;
     try {
         const allRegisteredColumn = yield (0, db_1.default)('SELECT name FROM colums WHERE board_id= $1', [boardId]);
-        const allColumns = allRegisteredColumn.rows.map((col) => col.name);
+        const allColumns = allRegisteredColumn.rows.map((col) => col.name).join(",");
+        // if(registered.some((column)=>)){
+        // }
     }
     catch (error) {
         console.log(error);

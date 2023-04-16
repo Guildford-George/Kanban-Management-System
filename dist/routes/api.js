@@ -23,8 +23,9 @@ const getSubtasksController_1 = __importDefault(require("../controllers/subtaskC
 const showAllBoardController_1 = __importDefault(require("../controllers/boardsControllers/showAllBoardController"));
 const deleteSubtask_1 = __importDefault(require("../controllers/subtaskController/deleteSubtask"));
 const updateSubtask_1 = __importDefault(require("../controllers/subtaskController/updateSubtask"));
+const getAllData_1 = __importDefault(require("../controllers/boardsControllers/getAllData"));
 const apiRouter = express_1.default.Router();
-apiRouter.get("/boards", showAllBoardController_1.default);
+apiRouter.get("/boards", getAllData_1.default);
 /**
  * @swagger
  * /api/v1/addboard:
@@ -160,7 +161,7 @@ apiRouter.get("/getcolumn/:id", getColumn_1.default, getTasks_1.default);
 apiRouter.delete("/delcolumn/:id", deleteColumn_1.default);
 apiRouter.put("/upcolumn/:id", updateColumn_1.default);
 apiRouter.post("/addcolumn/:id", newSingleColumn_1.default, newColumnsController_1.default);
-apiRouter.post("/tasks", newTask_1.default);
+apiRouter.post("/tasks", newTask_1.default, newSubTask_1.default);
 apiRouter.delete("/tasks/:id", deleteTask_1.default);
 apiRouter.get("/tasks/:id", getSingleTask_1.default, getSubtasksController_1.default);
 apiRouter.post("/subtasks", newSubTask_1.default);

@@ -33,7 +33,7 @@ const newBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
         const foundBoard = yield (0, db_1.default)("SELECT id FROM boards WHERE name ILIKE $1", [
             name,
         ]);
-        if (foundBoard.rowCount > 0) {
+        if (foundBoard.rows.length > 0) {
             return res
                 .status(409)
                 .json({ status: "error", message: "Board name already exist!!" });
