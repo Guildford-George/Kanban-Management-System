@@ -28,7 +28,8 @@ const newTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         }
         const status = matchColumn.rows[0].name;
         const foundTask = yield (0, db_1.default)('SELECT * FROM tasks WHERE title ILIKE $1 AND column_id=$2', [title, columnId]);
-        if (foundTask.rowCount > 0) {
+        console.log(foundTask.rows);
+        if (foundTask.rows.length > 0) {
             return res.status(403).json({ status: "error", message: "This task has already been registered!!" });
         }
         const registerTask = yield (0, db_1.default)('INSERT INTO tasks(title,description,column_id,status) VALUES($1,$2,$3,$4) RETURNING id,title,description', [title, description, columnId, status]);
@@ -43,6 +44,7 @@ const newTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         }
         req.body = Object.assign(Object.assign({}, req.task), { subtasks, fromTask: true });
         next();
+        res.send('success');
     }
     catch (error) {
         console.log(error);

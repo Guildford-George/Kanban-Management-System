@@ -288,7 +288,7 @@ const jsondata = { "boards": [
             "name": "Marketing Plan",
             "columns": [
                 {
-                    "name": "Todo",
+                    "name": "Marketing Plan",
                     "tasks": [
                         {
                             "title": "Plan Product Hunt launch",
