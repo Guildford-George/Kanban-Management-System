@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../../dbConfig/db"));
 const updateBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name } = req.body;
+    const { name, columns } = req.body;
     const { id } = req.params;
     try {
         if (!id) {
@@ -31,30 +31,25 @@ const updateBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
                 message: "Board name must be three-character long and begin with an alphabet!!",
             });
         }
-        const foundBoard = yield (0, db_1.default)("SELECT id FROM boards WHERE name= $1", [
-            name.toLowerCase(),
+        const prevBoardDetail = yield (0, db_1.default)("SELECT id,name FROM boards WHERE id= $1", [id]);
+        const foundBoard = yield (0, db_1.default)("SELECT id FROM boards WHERE name ILIKE $1", [
+            name,
         ]);
         if (foundBoard.rowCount > 0) {
             return res
                 .status(409)
                 .json({ status: "error", message: "Board name already exist!!" });
         }
-        const updateOneBoard = yield (0, db_1.default)('UPDATE boards SET name= $1 WHERE name<>$1 AND id= $2 RETURNING id,name', [name, id]);
-        if (updateOneBoard.rowCount == 0) {
-            console.log('no change');
-            req.board = {
-                id: id,
-                name: name
-            };
+        const updateOneBoard = yield (0, db_1.default)('UPDATE boards SET name= $1 WHERE  id= $1 RETURNING id,name', [id]);
+        req.board = {
+            id: updateOneBoard.rows[0].id,
+            name: updateOneBoard.rows[0].name
+        };
+        if (!columns || columns.length == 0) {
+            return res.status(200).json({ status: "success" });
         }
-        else {
-            console.log('change');
-            req.board = {
-                id: updateOneBoard.rows[0].id,
-                name: updateOneBoard.rows[0].name
-            };
-        }
-        res.status(200).json({ status: "ok" });
+        req.body.previousBoardName = prevBoardDetail.rows[0].name;
+        next();
     }
     catch (error) {
         console.log(error);

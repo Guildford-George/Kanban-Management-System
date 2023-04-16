@@ -13,24 +13,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../../dbConfig/db"));
-const updateColumn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const { name } = req.body;
+const getAllBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log('start');
-        const foundColumn = yield (0, db_1.default)('SELECT * FROM columns WHERE name=$1', [name]);
-        if (foundColumn.rowCount > 0) {
-            return res.status(403).json({ status: "error", message: "Column name already exist!!" });
+        const allBoards = yield (0, db_1.default)("SELECT * FROM boards ", []);
+        if (allBoards.rowCount < 0) {
+            return res
+                .status(409)
+                .json({ status: "error", message: "No Boards Found" });
         }
-        const newColumn = yield (0, db_1.default)('UPDATE columns SET name= $1 WHERE id= $2', [name, id]);
-        if (newColumn.rowCount == 0) {
-            return res.status(204).json({ status: "error", message: "The column is not found" });
-        }
-        res.status(200).json({ status: "ok", message: "success" });
+        res.json({ status: "success", boards: allBoards.rows });
+        next();
     }
     catch (error) {
         console.log(error);
-        res.status(204).json({ status: "error", message: "The column is not found" });
+        res.status(501).json({ status: "error", message: "Bad request!!" });
     }
 });
-exports.default = updateColumn;
+exports.default = getAllBoard;

@@ -22,7 +22,7 @@ const deleteColumn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const deleteTargetColumn = yield (0, db_1.default)('DELETE FROM columns WHERE id = $1', [id]);
         console.log(deleteTargetColumn);
         if (deleteTargetColumn.rowCount == 0) {
-            return res.status(204).json({ status: "error", message: "The column is not found!!" });
+            return res.status(400).json({ status: "error", message: "The column is not found!!" });
         }
         res.status(200).json({ status: "success" });
     }

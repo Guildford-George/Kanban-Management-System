@@ -21,7 +21,7 @@ const getColumn = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         }
         const foundColumn = yield (0, db_1.default)('SELECT id,name FROM columns WHERE id= $1', [id]);
         if (foundColumn.rowCount == 0) {
-            return res.status(204).json({ status: "error", message: "The column does not exist!!" });
+            return res.status(400).json({ status: "error", message: "The column does not exist!!" });
         }
         req.column = {
             columnId: foundColumn.rows[0].id,

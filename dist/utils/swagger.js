@@ -10,7 +10,7 @@ const options = {
     definition: {
         openai: "3.0.0",
         info: {
-            title: "Kanban API Docs",
+            title: "Kanban-Task-Management API Docs",
             version: package_json_1.version,
         },
         components: {
@@ -28,9 +28,7 @@ const options = {
             },
         ],
     },
-    apis: [
-        "./Kanban-Task-Management/backend/routes/*.ts",
-    ],
+    apis: ["./routes/api.ts"],
 };
 const swaggerSpec = (0, swagger_jsdoc_1.default)(options);
 function swaggerDocs(app, PORT) {
