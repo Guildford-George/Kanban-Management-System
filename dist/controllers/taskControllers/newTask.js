@@ -28,7 +28,6 @@ const newTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         }
         const status = matchColumn.rows[0].name;
         const foundTask = yield (0, db_1.default)('SELECT * FROM tasks WHERE title ILIKE $1 AND column_id=$2', [title, columnId]);
-        console.log(foundTask.rows);
         if (foundTask.rows.length > 0) {
             return res.status(403).json({ status: "error", message: "This task has already been registered!!" });
         }
@@ -44,7 +43,6 @@ const newTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         }
         req.body = Object.assign(Object.assign({}, req.task), { subtasks, fromTask: true });
         next();
-        res.send('success');
     }
     catch (error) {
         console.log(error);
