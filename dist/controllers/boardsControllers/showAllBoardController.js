@@ -21,7 +21,7 @@ const getAllBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
                 .status(409)
                 .json({ status: "error", message: "No Boards Found" });
         }
-        res.json({ status: "success", boards: allBoards.rows });
+        res.status(200).json({ status: "success", boards: allBoards.rows });
     }
     catch (error) {
         console.log(error);

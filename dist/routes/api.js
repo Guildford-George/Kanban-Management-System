@@ -24,8 +24,10 @@ const showAllBoardController_1 = __importDefault(require("../controllers/boardsC
 const deleteSubtask_1 = __importDefault(require("../controllers/subtaskController/deleteSubtask"));
 const updateSubtask_1 = __importDefault(require("../controllers/subtaskController/updateSubtask"));
 const getAllData_1 = __importDefault(require("../controllers/boardsControllers/getAllData"));
+const noNameSubtask_1 = __importDefault(require("../controllers/subtaskController/noNameSubtask"));
+const noNameColumn_1 = __importDefault(require("../controllers/columnControllers/noNameColumn"));
 const apiRouter = express_1.default.Router();
-apiRouter.get("/boards", getAllData_1.default);
+apiRouter.get("/getalldata", getAllData_1.default);
 /**
  * @swagger
  * /api/v1/addboard:
@@ -63,7 +65,7 @@ apiRouter.get("/boards", getAllData_1.default);
  *
  *
  */
-apiRouter.post("/addboard", newBoardController_1.default, newColumnsController_1.default);
+apiRouter.post("/boards", newBoardController_1.default, newColumnsController_1.default);
 /**
  * @swagger
  * '/api/v1/getboard/{id}':
@@ -84,7 +86,7 @@ apiRouter.post("/addboard", newBoardController_1.default, newColumnsController_1
  *
  *
  */
-apiRouter.get("/getboard/:id", showBoardController_1.default, getAllColumns_1.default);
+apiRouter.get("/boards/:id", showBoardController_1.default, getAllColumns_1.default);
 /**
  * @swagger
  * '/api/v1/delboard/{id}':
@@ -104,7 +106,7 @@ apiRouter.get("/getboard/:id", showBoardController_1.default, getAllColumns_1.de
  *        description: Board not found
  *
  */
-apiRouter.delete("/delboard/:id", deleteBoard_1.default);
+apiRouter.delete("/boards/:id", deleteBoard_1.default);
 /**
  * @swagger
  * '/api/v1/upboard/{id}':
@@ -138,7 +140,7 @@ apiRouter.delete("/delboard/:id", deleteBoard_1.default);
  *
  *
  */
-apiRouter.put("/upboard/:id", updateBoards_1.default);
+apiRouter.put("/boards/:id", updateBoards_1.default);
 /**
  * @swagger
  * /api/v1/allboard:
@@ -156,15 +158,17 @@ apiRouter.put("/upboard/:id", updateBoards_1.default);
  *         description: Bad request
  *
  */
-apiRouter.get("/allboard", showAllBoardController_1.default);
-apiRouter.get("/getcolumn/:id", getColumn_1.default, getTasks_1.default);
-apiRouter.delete("/delcolumn/:id", deleteColumn_1.default);
-apiRouter.put("/upcolumn/:id", updateColumn_1.default);
-apiRouter.post("/addcolumn/:id", newSingleColumn_1.default, newColumnsController_1.default);
+apiRouter.get("/boards", showAllBoardController_1.default);
+apiRouter.get("/columns/:id", getColumn_1.default, getTasks_1.default);
+apiRouter.delete("/columns/:id", deleteColumn_1.default);
+apiRouter.put("/columns/:id", updateColumn_1.default);
+apiRouter.post("/columns/:id", newSingleColumn_1.default, newColumnsController_1.default);
+apiRouter.post("/columns/empty", noNameColumn_1.default);
 apiRouter.post("/tasks", newTask_1.default, newSubTask_1.default);
 apiRouter.delete("/tasks/:id", deleteTask_1.default);
 apiRouter.get("/tasks/:id", getSingleTask_1.default, getSubtasksController_1.default);
 apiRouter.post("/subtasks", newSubTask_1.default);
 apiRouter.delete("/subtasks/:id", deleteSubtask_1.default);
 apiRouter.put("/subtasks/:id", updateSubtask_1.default);
+apiRouter.post("/subtask/empty", noNameSubtask_1.default);
 exports.default = apiRouter;

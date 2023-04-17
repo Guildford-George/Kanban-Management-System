@@ -17,20 +17,31 @@ const updateColumn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     const { id } = req.params;
     const { name } = req.body;
     try {
-        console.log('start');
-        const foundColumn = yield (0, db_1.default)('SELECT * FROM columns WHERE name=$1', [name]);
+        console.log("start");
+        const foundColumn = yield (0, db_1.default)("SELECT * FROM columns WHERE name=$1", [
+            name,
+        ]);
         if (foundColumn.rowCount > 0) {
-            return res.status(403).json({ status: "error", message: "Column name already exist!!" });
+            return res
+                .status(403)
+                .json({ status: "error", message: "Column name already exist!!" });
         }
-        const newColumn = yield (0, db_1.default)('UPDATE columns SET name= $1 WHERE id= $2', [name, id]);
+        const newColumn = yield (0, db_1.default)("UPDATE columns SET name= $1 WHERE id= $2", [
+            name,
+            id,
+        ]);
         if (newColumn.rowCount == 0) {
-            return res.status(204).json({ status: "error", message: "The column is not found" });
+            return res
+                .status(204)
+                .json({ status: "error", message: "The column is not found" });
         }
         res.status(200).json({ status: "ok", message: "success" });
     }
     catch (error) {
         console.log(error);
-        res.status(204).json({ status: "error", message: "The column is not found" });
+        res
+            .status(204)
+            .json({ status: "error", message: "The column is not found" });
     }
 });
 exports.default = updateColumn;
