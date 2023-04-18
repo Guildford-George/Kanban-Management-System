@@ -32,21 +32,21 @@ const updateBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
             });
         }
         const prevBoardDetail = yield (0, db_1.default)("SELECT id,name FROM boards WHERE id= $1", [id]);
-        const foundBoard = yield (0, db_1.default)("SELECT id FROM boards WHERE name ILIKE $1", [
-            name,
+        const foundBoard = yield (0, db_1.default)("SELECT id FROM boards WHERE name ILIKE $1 AND id <> $2", [
+            name, id
         ]);
         if (foundBoard.rowCount > 0) {
             return res
                 .status(409)
                 .json({ status: "error", message: "Board name already exist!!" });
         }
-        const updateOneBoard = yield (0, db_1.default)('UPDATE boards SET name= $1 WHERE  id= $1 RETURNING id,name', [id]);
+        const updateOneBoard = yield (0, db_1.default)('UPDATE boards SET name= $1 WHERE  id= $2 RETURNING id,name', [name, id]);
         req.board = {
             id: updateOneBoard.rows[0].id,
             name: updateOneBoard.rows[0].name
         };
         if (!columns || columns.length == 0) {
-            return res.status(200).json({ status: "success" });
+            return res.status(200).json({ status: "success", board: Object.assign({}, req.board) });
         }
         req.body.previousBoardName = prevBoardDetail.rows[0].name;
         next();

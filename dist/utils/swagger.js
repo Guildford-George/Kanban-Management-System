@@ -8,7 +8,7 @@ const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const package_json_1 = require("../package.json");
 const options = {
     definition: {
-        openai: "3.0.0",
+        openapi: "3.0.0",
         info: {
             title: "Kanban-Task-Management API Docs",
             version: package_json_1.version,
@@ -28,7 +28,7 @@ const options = {
             },
         ],
     },
-    apis: ["./routes/api.ts"],
+    apis: ["./routes/*.ts", './data/schemass.ts'],
 };
 const swaggerSpec = (0, swagger_jsdoc_1.default)(options);
 function swaggerDocs(app, PORT) {
