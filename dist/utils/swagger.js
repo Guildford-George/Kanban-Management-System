@@ -28,7 +28,7 @@ const options = {
             },
         ],
     },
-    apis: ["./routes/*.ts", './data/schemass.ts'],
+    apis: ["./routes/*.js", './data/schemass.js'],
 };
 const swaggerSpec = (0, swagger_jsdoc_1.default)(options);
 function swaggerDocs(app, PORT) {
