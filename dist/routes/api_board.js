@@ -14,7 +14,7 @@ const showAllBoardController_1 = __importDefault(require("../controllers/boardsC
 const getAllData_1 = __importDefault(require("../controllers/boardsControllers/getAllData"));
 const updateBulkColumns_1 = __importDefault(require("../controllers/columnControllers/updateBulkColumns"));
 const apiRouter_01 = express_1.default.Router();
-apiRouter_01.get("/boards", getAllData_1.default);
+apiRouter_01.get("/getalldata", getAllData_1.default);
 /**
  * @openapi
  * /api/v1/boards:
