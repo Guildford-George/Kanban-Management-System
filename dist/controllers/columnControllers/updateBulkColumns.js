@@ -17,13 +17,18 @@ const pg_format_1 = __importDefault(require("pg-format"));
 const updateBulkColumns = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const boardId = req.params.id;
     const boardName = req.board.name;
-    const { columns, previousBoardName } = req.body;
+    const { columns, deletedColumns, previousBoardName } = req.body;
     try {
         const allRegisteredColumn = yield (0, db_1.default)("SELECT name FROM columns WHERE board_id= $1", [boardId]);
+        console.log(deletedColumns);
+        if (deletedColumns.length > 0 || deletedColumns) {
+            const bulkdeleteColumnsCommand = (0, pg_format_1.default)('DELETE FROM columns WHERE id IN (%L)', deletedColumns);
+            console.log(bulkdeleteColumnsCommand);
+            yield (0, db_1.default)(bulkdeleteColumnsCommand, []);
+        }
         const allColumns = allRegisteredColumn.rows.map((col) => col.name.toLowerCase());
         const filteredColumn = columns.filter((col) => !allColumns.includes(col.name.toLowerCase()));
         if (filteredColumn.length == 0) {
-            yield (0, db_1.default)('DELETE FROM columns WHERE name =$1 AND board_id= $2', ["", boardId]);
             return res.status(201).json({ status: "success" });
         }
         const queryFormat = [[], []];
@@ -41,7 +46,6 @@ const updateBulkColumns = (req, res) => __awaiter(void 0, void 0, void 0, functi
         const formatQuery = (0, pg_format_1.default)(`UPDATE columns SET name= tmp_name FROM (SELECT UNNEST(ARRAY[%L]) tmp_id,
         UNNEST(ARRAY[%L]) as tmp_name) tmp WHERE id= tmp_id::uuid`, queryFormat[0], queryFormat[1]);
         yield (0, db_1.default)(formatQuery, []);
-        yield (0, db_1.default)('DELETE FROM columns WHERE name =$1 AND board_id= $2', ["", boardId]);
         res.send("success");
     }
     catch (error) {

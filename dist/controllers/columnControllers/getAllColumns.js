@@ -19,7 +19,7 @@ const getAllColumns = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (!id) {
             return res.status(400).json({ status: "error", message: "Board can not be empty" });
         }
-        const columns = yield (0, db_1.default)('SELECT id columnId, name FROM columns WHERE board_id=$1', [id]);
+        const columns = yield (0, db_1.default)('SELECT id columnId, name FROM columns WHERE board_id=$1 ORDER BY created_time ASC', [id]);
         const board = {
             boardId: id,
             name,

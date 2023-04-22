@@ -26,12 +26,14 @@ const newTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         if (matchColumn.rowCount == 0) {
             return res.status(400).json({ status: "error", message: "The column is not found" });
         }
+        const totalTasks = yield (0, db_1.default)('SELECT * FROM tasks WHERE column_id=$1', [columnId]);
+        const taskCount = totalTasks.rows.length;
         const status = matchColumn.rows[0].name;
         const foundTask = yield (0, db_1.default)('SELECT * FROM tasks WHERE title ILIKE $1 AND column_id=$2', [title, columnId]);
         if (foundTask.rows.length > 0) {
             return res.status(403).json({ status: "error", message: "This task has already been registered!!" });
         }
-        const registerTask = yield (0, db_1.default)('INSERT INTO tasks(title,description,column_id,status) VALUES($1,$2,$3,$4) RETURNING id,title,description', [title, description, columnId, status]);
+        const registerTask = yield (0, db_1.default)('INSERT INTO tasks(title,description,column_id,status,order_location) VALUES($1,$2,$3,$4,$5) RETURNING id,title,description', [title, description, columnId, status, taskCount + 1]);
         const createdTask = registerTask.rows[0];
         req.task = {
             taskId: createdTask.id,

@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../../dbConfig/db"));
 const getAllBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const allBoards = yield (0, db_1.default)("SELECT * FROM boards ", []);
+        const allBoards = yield (0, db_1.default)("SELECT * FROM boards order by created_time ASC", []);
         if (allBoards.rowCount < 0) {
             return res
                 .status(409)

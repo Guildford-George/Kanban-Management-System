@@ -19,7 +19,7 @@ const getSubtasks = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         if (!taskId) {
             return res.status(400).json({ status: "error", message: "Task can not found" });
         }
-        const subtasks = yield (0, db_1.default)('SELECT id subtaskID, title, is_completed FROM subtasks WHERE task_id= $1', [taskId]);
+        const subtasks = yield (0, db_1.default)('SELECT id subtaskID, title, is_completed FROM subtasks WHERE task_id= $1 ORDER BY created_time ASC', [taskId]);
         const task = Object.assign(Object.assign({}, req.task), { subtasks: subtasks.rows });
         res.status(200).json({ status: "success", task });
     }

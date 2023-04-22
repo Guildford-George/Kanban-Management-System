@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../../dbConfig/db"));
 const updateBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, columns } = req.body;
+    const { name, columns, deletedColumns } = req.body;
     const { id } = req.params;
     try {
         if (!id) {
@@ -45,7 +45,7 @@ const updateBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
             id: updateOneBoard.rows[0].id,
             name: updateOneBoard.rows[0].name
         };
-        if (!columns || columns.length == 0) {
+        if ((!columns || columns.length == 0) && (!deletedColumns || deletedColumns.length == 0)) {
             return res.status(200).json({ status: "success", board: Object.assign({}, req.board) });
         }
         req.body.previousBoardName = prevBoardDetail.rows[0].name;

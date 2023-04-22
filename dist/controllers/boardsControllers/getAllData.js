@@ -16,10 +16,10 @@ const db_1 = __importDefault(require("../../dbConfig/db"));
 const formatAllData_1 = __importDefault(require("../../utils/formatAllData"));
 const getAllData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const boards = yield (0, db_1.default)('SELECT id boardId, name FROM boards', []);
-        const columns = yield (0, db_1.default)('SELECT id columnId, name, board_id FROM columns WHERE name<>$1', [""]);
-        const tasks = yield (0, db_1.default)('SELECT id taskId, title, description, status, column_id FROM tasks', []);
-        const subtask = yield (0, db_1.default)('SELECT id subtaskid, title, is_completed, task_id FROM subtasks WHERE title<>$1', [""]);
+        const boards = yield (0, db_1.default)('SELECT id boardId, name FROM boards ORDER BY created_time ASC', []);
+        const columns = yield (0, db_1.default)('SELECT id columnId, name, board_id FROM columns WHERE name<>$1 ORDER BY created_time ASC', [""]);
+        const tasks = yield (0, db_1.default)('SELECT id taskId, title, description, status, column_id FROM tasks ORDER BY order_location ASC', []);
+        const subtask = yield (0, db_1.default)('SELECT id subtaskid, title, is_completed, task_id FROM subtasks WHERE title<>$1 ORDER BY created_time ASC', [""]);
         res.status(200).json({ boards: (0, formatAllData_1.default)(boards.rows, columns.rows, tasks.rows, subtask.rows) });
     }
     catch (error) {

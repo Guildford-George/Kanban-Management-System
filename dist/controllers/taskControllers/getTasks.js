@@ -19,7 +19,7 @@ const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!columnId) {
             return res.status(400).json({ status: "error", message: "The task is not found" });
         }
-        const tasks = yield (0, db_1.default)('SELECT id taskId,title description FROM tasks WHERE column_id= $1', [columnId]);
+        const tasks = yield (0, db_1.default)('SELECT id taskId,title description FROM tasks WHERE column_id= $1 ORDER BY order_location ASC', [columnId]);
         const column = {
             columnId,
             name,
