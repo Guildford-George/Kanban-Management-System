@@ -14,20 +14,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../../dbConfig/db"));
 const newSingleColumn = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const { columns } = req.body;
+    const { boardid, columns } = req.body;
     try {
-        if (!id) {
+        if (!boardid) {
             return res.status(400).json({ status: "error", message: "The board can not be empty!!" });
         }
         if (!columns || columns.length != 1) {
             return res.status(400).json({ status: "error", message: "Enter the new column" });
         }
-        const foundBoard = yield (0, db_1.default)('SELECT id,name FROM boards WHERE id= $1', [id]);
+        const foundBoard = yield (0, db_1.default)('SELECT id,name FROM boards WHERE id= $1', [boardid]);
         if (foundBoard.rowCount == 0) {
             return res.status(204).json({ status: "error", message: "The board does not exist!!" });
         }
-        const foundColumn = yield (0, db_1.default)('SELECT * FROM columns WHERE board_id= $1 AND name ILIKE $2', [id, columns[0]]);
+        const foundColumn = yield (0, db_1.default)('SELECT * FROM columns WHERE board_id= $1 AND name ILIKE $2', [boardid, columns[0]]);
         if (foundColumn.rowCount > 0) {
             return res.status(403).json({ status: "error", message: "Column already exist" });
         }

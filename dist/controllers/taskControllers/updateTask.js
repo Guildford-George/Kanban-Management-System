@@ -15,24 +15,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../../dbConfig/db"));
 const updateTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const taskId = req.params.id;
-    const { title, description, columnid, subtasks } = req.body;
+    const { title, description, subtasks, deletedSubtasks, move } = req.body;
+    const sourceColumnid = move.source.column;
+    const sourceIndex = move.source.index;
+    const destinationColumnid = move.destination.column;
+    const destinationIndex = move.destination.index;
+    console.log(move);
     try {
         if (!title) {
             return res.status(400).json({ status: "error", message: "The task-name input field can not be empty" });
         }
-        if (!columnid) {
-            return res.status(400).json({ status: "error", message: "The column is not found" });
-        }
+        const destination = yield (0, db_1.default)('SELECT * FROM columns WHERE id= $1', [destinationColumnid]);
         const foundTask = yield (0, db_1.default)('SELECT title FROM tasks WHERE id= $1', [taskId]);
         if (foundTask.rows.length == 0) {
             return res.status(400).json({ status: "error", message: "Task does not exist" });
         }
-        const columnTasks = yield (0, db_1.default)('SELECT title FROM tasks WHERE column_id= $1 AND id <> $2 AND title ILIKE $3', [columnid, taskId, title]);
+        const columnTasks = yield (0, db_1.default)('SELECT title FROM tasks WHERE column_id= $1 AND id <> $2 AND title ILIKE $3', [sourceColumnid, taskId, title]);
         if (columnTasks.rows.length > 0) {
             return res.status(409).json({ status: "error", message: "Task already exist" });
         }
-        yield (0, db_1.default)('UPDATE tasks SET title= $1, description= $2 WHERE id= $3', [title, description, taskId]);
-        if (!subtasks || subtasks.length == 0) {
+        if (sourceColumnid != destinationColumnid) {
+            yield (0, db_1.default)('UPDATE tasks SET order_location=order_location-1 WHERE column_id=$1 AND order_location>$2', [sourceColumnid, sourceIndex]);
+            yield (0, db_1.default)('UPDATE tasks SET order_location=order_location+1 WHERE column_id=$1 AND order_location>=$2', [destinationColumnid, destinationIndex]);
+            yield (0, db_1.default)('UPDATE tasks SET title= $1, description= $2, order_location= $3, column_id=$4, status=$5 WHERE id= $6', [title, description, destinationIndex, destinationColumnid, destination.rows[0].name, taskId]);
+        }
+        else if (sourceColumnid === destinationColumnid && sourceIndex !== destinationIndex) {
+            // source
+            yield (0, db_1.default)('UPDATE tasks SET order_location=order_location-1 WHERE column_id=$1 AND order_location>$2 AND order_location<=$3', [sourceColumnid, sourceIndex, destinationIndex]);
+            // destination
+            yield (0, db_1.default)('UPDATE tasks SET title= $1, description= $2, order_location= $3 WHERE id= $4', [title, description, destinationIndex, taskId]);
+        }
+        if ((!subtasks || subtasks.length == 0) && (!deletedSubtasks || deletedSubtasks.length == 0)) {
             return res.status(200).json({ status: "success" });
         }
         req.body.taskId = taskId;

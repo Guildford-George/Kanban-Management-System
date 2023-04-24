@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../../dbConfig/db"));
 const pg_format_1 = __importDefault(require("pg-format"));
 const updateBulkSubtasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { previousTaskTitle, taskId, subtasks } = req.body;
+    const { previousTaskTitle, taskId, subtasks, deletedSubtasks } = req.body;
     try {
         const registeredSubtask = yield (0, db_1.default)("SELECT * FROM subtasks WHERE task_id= $1", [taskId]);
         if (registeredSubtask.rows.length == 0) {
@@ -36,11 +36,12 @@ const updateBulkSubtasks = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 formatSubtasks[2][nextItem] = subtasks[nextItem].is_completed;
             }
         }
+        const deletedSubtasksCommand = (0, pg_format_1.default)('DELTE FROM subtask WHERE id IN(%L)', deletedSubtasks);
         const queryCommand = (0, pg_format_1.default)(`UPDATE subtasks SET title=tmp_title, is_completed= tmp_is_completed::boolean FROM
       (SELECT UNNEST(ARRAY[%L]) tmp_id,UNNEST(ARRAY[%L]) tmp_title,UNNEST(ARRAY[%L]) tmp_is_completed) tmp
       WHERE id=tmp_id::uuid`, formatSubtasks[0], formatSubtasks[1], formatSubtasks[2]);
+        yield (0, db_1.default)(deletedSubtasksCommand, []);
         yield (0, db_1.default)(queryCommand, []);
-        yield (0, db_1.default)("DELETE FROM subtasks WHERE title = $1 AND task_id= $2", ["", taskId]);
         res.status(200).json({ status: "success" });
     }
     catch (error) {
@@ -49,7 +50,6 @@ const updateBulkSubtasks = (req, res) => __awaiter(void 0, void 0, void 0, funct
             previousTaskTitle,
             taskId,
         ]);
-        yield (0, db_1.default)("DELETE FROM subtasks WHERE title = $1 AND task_id= $2", ["", taskId]);
         res.status(500).json({
             status: "error",
             message: "An error occurred while trying to update subtasks"

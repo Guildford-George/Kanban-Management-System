@@ -86,6 +86,6 @@ apiRouter_02.put("/columns/:id", updateColumn_1.default);
  *         description: Bad request
  *
  */
-apiRouter_02.post("/columns/:id", newSingleColumn_1.default, newColumnsController_1.default);
+apiRouter_02.post("/columns", newSingleColumn_1.default, newColumnsController_1.default);
 apiRouter_02.post("/columns/empty", noNameColumn_1.default);
 exports.default = apiRouter_02;
