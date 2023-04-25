@@ -16,9 +16,9 @@ const db_1 = __importDefault(require("../../dbConfig/db"));
 const updateTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const taskId = req.params.id;
     const { title, description, subtasks, deletedSubtasks, move } = req.body;
-    const sourceColumnid = move.source.column;
+    const sourceColumnid = move.source.columnid;
     const sourceIndex = move.source.index;
-    const destinationColumnid = move.destination.column;
+    const destinationColumnid = move.destination.columnid;
     const destinationIndex = move.destination.index;
     console.log(move);
     try {
