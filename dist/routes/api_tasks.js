@@ -11,6 +11,7 @@ const getSingleTask_1 = __importDefault(require("../controllers/taskControllers/
 const getSubtasksController_1 = __importDefault(require("../controllers/subtaskController/getSubtasksController"));
 const updateTask_1 = __importDefault(require("../controllers/taskControllers/updateTask"));
 const updateBulkSubtasks_1 = __importDefault(require("../controllers/subtaskController/updateBulkSubtasks"));
+const moveTask_1 = __importDefault(require("../controllers/taskControllers/moveTask"));
 const apiRouter_03 = express_1.default.Router();
 /**
  * @openapi
@@ -93,4 +94,5 @@ apiRouter_03.delete("/tasks/:id", deleteTask_1.default);
  */
 apiRouter_03.get("/tasks/:id", getSingleTask_1.default, getSubtasksController_1.default);
 apiRouter_03.put("/tasks/:id", updateTask_1.default, updateBulkSubtasks_1.default);
+apiRouter_03.put("/tasks/move/:id", moveTask_1.default);
 exports.default = apiRouter_03;

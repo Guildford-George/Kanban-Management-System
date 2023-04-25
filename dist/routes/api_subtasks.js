@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const newSubTask_1 = __importDefault(require("../controllers/subtaskController/newSubTask"));
 const deleteSubtask_1 = __importDefault(require("../controllers/subtaskController/deleteSubtask"));
 const updateSubtask_1 = __importDefault(require("../controllers/subtaskController/updateSubtask"));
-const noNameSubtask_1 = __importDefault(require("../controllers/subtaskController/noNameSubtask"));
+const updateSubtaskCompletion_1 = __importDefault(require("../controllers/subtaskController/updateSubtaskCompletion"));
 const apiRouter_04 = express_1.default.Router();
 /**
  * @openapi
@@ -89,5 +89,5 @@ apiRouter_04.delete("/subtasks/:id", deleteSubtask_1.default);
  *
  */
 apiRouter_04.put("/subtasks/:id", updateSubtask_1.default);
-apiRouter_04.post("/subtask/empty", noNameSubtask_1.default);
+apiRouter_04.put("/subtasks/complete/:id", updateSubtaskCompletion_1.default);
 exports.default = apiRouter_04;

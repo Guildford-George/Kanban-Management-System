@@ -8,7 +8,6 @@ const deleteColumn_1 = __importDefault(require("../controllers/columnControllers
 const getColumn_1 = __importDefault(require("../controllers/columnControllers/getColumn"));
 const newColumnsController_1 = __importDefault(require("../controllers/columnControllers/newColumnsController"));
 const newSingleColumn_1 = __importDefault(require("../controllers/columnControllers/newSingleColumn"));
-const noNameColumn_1 = __importDefault(require("../controllers/columnControllers/noNameColumn"));
 const updateColumn_1 = __importDefault(require("../controllers/columnControllers/updateColumn"));
 const getTasks_1 = __importDefault(require("../controllers/taskControllers/getTasks"));
 const apiRouter_02 = express_1.default.Router();
@@ -87,5 +86,4 @@ apiRouter_02.put("/columns/:id", updateColumn_1.default);
  *
  */
 apiRouter_02.post("/columns", newSingleColumn_1.default, newColumnsController_1.default);
-apiRouter_02.post("/columns/empty", noNameColumn_1.default);
 exports.default = apiRouter_02;

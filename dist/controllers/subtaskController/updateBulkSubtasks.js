@@ -36,11 +36,13 @@ const updateBulkSubtasks = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 formatSubtasks[2][nextItem] = subtasks[nextItem].is_completed;
             }
         }
-        const deletedSubtasksCommand = (0, pg_format_1.default)('DELTE FROM subtask WHERE id IN(%L)', deletedSubtasks);
+        if (!deletedSubtasks || deletedSubtasks.length > 0) {
+            const deletedSubtasksCommand = (0, pg_format_1.default)('DELTE FROM subtask WHERE id IN(%L)', deletedSubtasks);
+            yield (0, db_1.default)(deletedSubtasksCommand, []);
+        }
         const queryCommand = (0, pg_format_1.default)(`UPDATE subtasks SET title=tmp_title, is_completed= tmp_is_completed::boolean FROM
       (SELECT UNNEST(ARRAY[%L]) tmp_id,UNNEST(ARRAY[%L]) tmp_title,UNNEST(ARRAY[%L]) tmp_is_completed) tmp
       WHERE id=tmp_id::uuid`, formatSubtasks[0], formatSubtasks[1], formatSubtasks[2]);
-        yield (0, db_1.default)(deletedSubtasksCommand, []);
         yield (0, db_1.default)(queryCommand, []);
         res.status(200).json({ status: "success" });
     }
